@@ -1,0 +1,86 @@
+# WESAD Training Configuration
+# =============================
+# Configuration file for train.py
+
+# Data paths
+data:
+  processed_dir: "data_processed/"
+  x_file: "X.npy"
+  y_file: "y.npy"
+
+# Model architecture
+model:
+  name: "StressCNN"
+  in_channels: 4          # ECG, EDA, TEMP, ACC
+  num_classes: 2          # stress vs non-stress
+  
+  # CNN layers configuration
+  conv_layers:
+    - out_channels: 32
+      kernel_size: 5
+      stride: 1
+      padding: 2
+    - out_channels: 64
+      kernel_size: 5
+      stride: 1
+      padding: 2
+    - out_channels: 128
+      kernel_size: 3
+      stride: 1
+      padding: 1
+  
+  # Fully connected layers
+  fc_layers:
+    - 256
+    - 64
+  
+  dropout: 0.5
+  batch_norm: true
+
+# Training parameters
+training:
+  batch_size: 32
+  epochs: 100
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  
+  # Optimizer
+  optimizer: "adam"  # Options: adam, sgd, adamw
+  
+  # Learning rate scheduler
+  scheduler:
+    type: "step"     # Options: step, cosine, plateau
+    step_size: 20
+    gamma: 0.5
+  
+  # Early stopping
+  early_stopping:
+    enabled: true
+    patience: 15
+    min_delta: 0.001
+    monitor: "val_loss"  # Options: val_loss, val_accuracy
+
+# Data split
+split:
+  train_ratio: 0.7
+  val_ratio: 0.15
+  test_ratio: 0.15
+  random_seed: 42
+  stratify: true
+
+# Model saving
+checkpoints:
+  save_dir: "models/"
+  save_best: true
+  save_last: true
+  filename: "stress_cnn.pth"
+
+# Logging
+logging:
+  verbose: true
+  log_interval: 10      # Log every N batches
+  tensorboard: false    # Enable tensorboard logging
+  log_dir: "logs/"
+
+# Device
+device: "auto"  # Options: auto, cpu, cuda, mps
